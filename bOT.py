@@ -1,6 +1,20 @@
 import telebot
+import mysql.connector
 
 bot = telebot.TeleBot("1232540757:AAGOs-DgCfFfsaLmshjLHo7_F9deTT1t4z0", parse_mode=None) # You can set parse_mode by default. HTML or MARKDOWN
+
+db = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="qwerty-123"
+)
+
+cursor = db.cursor()
+# cursor.execute("CREATE DATABASE bOT")
+cursor.execute("SHOW DATABASES")
+
+for x in cursor:
+  print(x)
 
 user_data = {}
 class User:
