@@ -13,10 +13,11 @@ def send_welcome(message):
         msg = bot.send_message(message.chat.id, "Введите имя")
         bot.register_next_step_handler(msg, process_firstname_step)
 
-def process_first_name_step(message):
+def process_firstname_step(message):
     try:
         user_id = message.from_user.id
         user_data[user_id] = User(message.text)
+
         msg = bot.send_message(message.chat.id, "Введите фамилию")
         bot.register_next_step_handler(msg, process_lastname_step)
     except Exception as e:
@@ -28,10 +29,15 @@ def process_lastname_step(message):
         user = user_data[user_id]
         user.last_name = message.text
 
+        sql = "INSERT INTO users (first_name, last_name, user_id) \
+                                  VALUES (%s, %s, %s)"
+        val = (user.first_name, user.last_name, user_id)
+        cursor.execute(sql, val)
+        db.commit()
+
         bot.send_message(message.chat.id, "Вы успешно зарегистрированны!")
     except Exception as e:
         bot.reply_to(message, 'Ошибка, или вы уже зарегистрированны!')
-
 
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
 # Delay=2 means that after any change in next step handlers (e.g. calling register_next_step_handler())
