@@ -1,31 +1,55 @@
 import telebot
 import mysql.connector
 
-bot = telebot.TeleBot("1232540757:AAGOs-DgCfFfsaLmshjLHo7_F9deTT1t4z0", parse_mode=None) # You can set parse_mode by default. HTML or MARKDOWN
+bot = telebot.TeleBot("1232540757:AAGOs-DgCfFfsaLmshjLHo7_F9deTT1t4z0",
+                      parse_mode=None)  # You can set parse_mode by default. HTML or MARKDOWN
 
 db = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="qwerty-123"
+    host="localhost",
+    user="root",
+    password="qwerty-123",
+    database="bOT"
 )
 
 cursor = db.cursor()
-# cursor.execute("CREATE DATABASE bOT")
-cursor.execute("SHOW DATABASES")
 
-for x in cursor:
-  print(x)
+# cursor.execute("CREATE DATABASE bOT")
+# cursor.execute("SHOW DATABASES")
+
+# for x in cursor:
+#   print(x)
+
+# cursor.execute("CREATE TABLE users (first_name VARCHAR(255), last_name VARCHAR(255))")
+
+# cursor.execute("SHOW TABLES")
+
+# for x in cursor:
+#   print(x)
+
+# cursor.execute("ALTER TABLE users ADD COLUMN (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT UNIQUE)")
+
+# sql = "INSERT INTO users (first_name, last_name, user_id) VALUES (%s, %s, %s)"
+# val = ("Саша", "Николаев", 1)
+# cursor.execute(sql, val)
+# db.commit()
+#
+# print(cursor.rowcount, "запись добавлена.")
+
 
 user_data = {}
+
+
 class User:
     def __init__(self, first_name):
         self.first_name = first_name
         self.last_name = ''
 
+
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-        msg = bot.send_message(message.chat.id, "Введите имя")
-        bot.register_next_step_handler(msg, process_firstname_step)
+    msg = bot.send_message(message.chat.id, "Введите имя")
+    bot.register_next_step_handler(msg, process_firstname_step)
+
 
 def process_firstname_step(message):
     try:
@@ -36,6 +60,7 @@ def process_firstname_step(message):
         bot.register_next_step_handler(msg, process_lastname_step)
     except Exception as e:
         bot.reply_to(message, 'oooops')
+
 
 def process_lastname_step(message):
     try:
@@ -52,6 +77,7 @@ def process_lastname_step(message):
         bot.send_message(message.chat.id, "Вы успешно зарегистрированны!")
     except Exception as e:
         bot.reply_to(message, 'Ошибка, или вы уже зарегистрированны!')
+
 
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
 # Delay=2 means that after any change in next step handlers (e.g. calling register_next_step_handler())
